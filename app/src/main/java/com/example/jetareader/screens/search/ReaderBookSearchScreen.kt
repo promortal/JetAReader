@@ -43,6 +43,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.jetareader.components.InputField
 import com.example.jetareader.components.ReaderAppBar
 import com.example.jetareader.model.Item
+import com.example.jetareader.navigation.ReaderScreens
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -117,7 +118,11 @@ fun BookList(navController: NavController, viewModel: BookSearchViewModel = hilt
 
     val listOfBooks = viewModel.list
      if (viewModel.isLoading) {
-         LinearProgressIndicator()
+         Row(horizontalArrangement = Arrangement.SpaceBetween) {
+             LinearProgressIndicator()
+             Text("Loading...")
+         }
+
      } else {
          LazyColumn(modifier = Modifier.fillMaxSize(),
              contentPadding = PaddingValues(16.dp)
@@ -132,7 +137,9 @@ fun BookList(navController: NavController, viewModel: BookSearchViewModel = hilt
 fun BookRow(book: Item, navController: NavController = NavController(
     LocalContext.current)) {
     Card(modifier = Modifier
-        .clickable {}
+        .clickable {
+            navController.navigate(ReaderScreens.DetailScreen.name + "/${book.id}")
+        }
         .fillMaxWidth()
         .padding(5.dp),
         elevation = CardDefaults.cardElevation(5.dp),
