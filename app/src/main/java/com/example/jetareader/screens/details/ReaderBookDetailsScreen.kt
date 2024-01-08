@@ -40,6 +40,7 @@ import com.example.jetareader.components.RoundedButton
 import com.example.jetareader.data.Resource
 import com.example.jetareader.model.Item
 import com.example.jetareader.model.MBook
+import com.example.jetareader.navigation.ReaderScreens
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -166,7 +167,7 @@ fun SaveToFirebase(book: MBook, navController: NavController) {
                     .addOnCompleteListener {
                         task ->
                         if (task.isSuccessful) {
-                            navController.popBackStack()
+                            navController.navigate(ReaderScreens.HomeScreen.name)
                         }
                     }
             }

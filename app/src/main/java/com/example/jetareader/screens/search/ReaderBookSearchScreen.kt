@@ -128,7 +128,7 @@ fun BookList(navController: NavController, viewModel: BookSearchViewModel = hilt
              contentPadding = PaddingValues(16.dp)
          ) { items(listOfBooks) { book ->
              BookRow(book, navController)
-         }
+            }
          }
      }
 }

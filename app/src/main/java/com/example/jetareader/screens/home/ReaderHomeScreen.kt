@@ -74,19 +74,8 @@ fun HomeContent(navController: NavController, viewModel: HomeScreenViewModel ) {
                 mBook.userId == currentUser?.uid.toString()
             }
     }
-
-
-    val readingNow = listOf(
-        MBook(id = "awsasx", title = "This Book", authors = "ALl of Us", notes = null)
-    )
-
-//    val listOfBooks = listOf(
-//        MBook(id = "awsasx", title = "My Book", authors = "ALl of Us", notes = null),
-//        MBook(id = "bwsasx", title = "Your Book", authors = "ALl of Us", notes = null),
-//        MBook(id = "cwsasx", title = "Our Book", authors = "ALl of Us", notes = null),
-//        MBook(id = "dwsasx", title = "Their Book", authors = "ALl of Us", notes = null),
-//        MBook(id = "ewsasx", title = "Nobody's Book", authors = "ALl of Us", notes = null)
-//    )
+    val readingNow = listOfBooks.filter { mBook -> mBook.startedReading != null && mBook.finishedReading == null}
+    val addedBooks = listOfBooks.filter{mBook -> mBook.startedReading == null && mBook.finishedReading == null}
 
     val email = FirebaseAuth.getInstance().currentUser?.email
     val currentUserName = if (!email.isNullOrEmpty())
@@ -96,7 +85,7 @@ fun HomeContent(navController: NavController, viewModel: HomeScreenViewModel ) {
         Row(modifier = Modifier.align(alignment = Alignment.Start)) {
             TitleSection(label = "Your reading\n activity right now...")
             Spacer(modifier = Modifier.fillMaxWidth(0.7f))
-            Column {
+            Column (modifier = Modifier.clickable { navController.navigate(ReaderScreens.ReaderStatsScreen.name) }) {
                 Icon(modifier = Modifier
                     .clickable {
                         navController.navigate(ReaderScreens.ReaderStatsScreen.name)
@@ -120,17 +109,17 @@ fun HomeContent(navController: NavController, viewModel: HomeScreenViewModel ) {
 
         TitleSection(label = "Reading List")
 
-        BoolListArea(listOfBooks, navController)
+        BookListArea(addedBooks, navController)
     }
 }
 
 @Composable
 fun ReadingRightNow(books: List<MBook>, navController: NavController) {
-    BoolListArea(books, navController)
+    BookListArea(books, navController)
 }
 
 @Composable
-fun BoolListArea(listOfBooks: List<MBook>, navController: NavController) {
+fun BookListArea(listOfBooks: List<MBook>, navController: NavController) {
 
     HorizontalScrollableComponent(listOfBooks) {
         navController.navigate(ReaderScreens.UpdateScreen.name + "/$it")
@@ -162,7 +151,7 @@ fun HorizontalScrollableComponent(listOfBooks: List<MBook>,
                     )
 
                 }
-            }else {
+            } else {
                 for (book in listOfBooks) {
                     ListCard(book) {
                         onCardPressed(book.googleBookId.toString())

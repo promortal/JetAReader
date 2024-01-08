@@ -1,6 +1,8 @@
 package com.example.jetareader.components
 
+import android.content.Context
 import android.view.MotionEvent
+import android.widget.Toast
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -197,7 +199,7 @@ fun ListCard(book: MBook, onPressDetails: (String) -> Unit = {}) {
         modifier = Modifier
             .padding(6.dp)
             .height(242.dp)
-            .width(202.dp)
+            .width(252.dp)
             .clickable { onPressDetails.invoke(book.title.toString()) }
     ) {
         Column(modifier = Modifier.width(screenWidth.dp - (spacing * 2)),
@@ -218,7 +220,7 @@ fun ListCard(book: MBook, onPressDetails: (String) -> Unit = {}) {
                 ) {
                     Icon(imageVector = Icons.Rounded.FavoriteBorder, contentDescription = "Fav Icon",
                         modifier = Modifier.padding(bottom = 1.dp))
-                    BookRating(score = 3.5)
+                    BookRating(score = if (book.rating != null) book.rating!! else 0.0)
                 }
             }
 
@@ -228,13 +230,25 @@ fun ListCard(book: MBook, onPressDetails: (String) -> Unit = {}) {
                 overflow = TextOverflow.Ellipsis)
 
             Text (book.authors.toString(), modifier = Modifier.padding(4.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.labelMedium)
 
-            Row(modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.Bottom) {
-                RoundedButton(label = "Reading", radius = 70)
+            val isReading = remember {
+                mutableStateOf(false)
             }
+
+            isReading.value = book.startedReading != null && book.finishedReading == null
+
+            if (isReading.value) {
+                Row(modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.Bottom) {
+                    RoundedButton(label = "Reading", radius = 70)
+                }
+            }
+
+
 
         }
     }
@@ -385,4 +399,8 @@ fun RatingBar(
             )
         }
     }
+}
+
+fun showToast(context: Context, msg: String) {
+    Toast.makeText(context,msg, Toast.LENGTH_SHORT).show()
 }
